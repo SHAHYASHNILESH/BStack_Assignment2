@@ -20,33 +20,19 @@ from selenium.common.exceptions import TimeoutException
 options = ChromeOptions()
 options.set_capability("sessionName", "BStack Sample Test")
 driver = webdriver.Chrome(options=options)
+
 driver = webdriver.Chrome()
 driver.maximize_window()
 
-MAX_PAGE_LOAD_WAIT_TIME = 60
-
-
-def find_element_with_retry(driver, by, value, retries=5, delay=20):
-    for _ in range(retries):
-        try:
-            element = WebDriverWait(driver, delay).until(
-                EC.presence_of_element_located((by, value))
-            )
-            return element
-        except TimeoutException:
-            print("Element not found. Retrying...")
-    # If element is not found after all retries, raise TimeoutException
-    raise TimeoutException(
-        f"Element with {by}={value} not found after {retries} retries"
-    )
+MAX_PAGE_LOAD_WAIT_TIME = 30
 
 
 try:
     # Set page load timeout
-    # driver.set_page_load_timeout(MAX_PAGE_LOAD_WAIT_TIME)
+    driver.set_page_load_timeout(MAX_PAGE_LOAD_WAIT_TIME)
 
     # Retry loading the page
-    retries = 5
+    retries = 3
     for _ in range(retries):
         try:
             driver.get("https://www.flipkart.com")
@@ -57,11 +43,11 @@ try:
         raise TimeoutException("Page load failed after multiple retries.")
 
     time.sleep(5)
-    # Use WebDriverWait instead of time.sleep
     # search_box = WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.NAME, "q")))
-    # Wait for search box to be clickable
+
     # Determine screen size
     window_width = driver.execute_script("return window.innerWidth")
+
     if window_width >= 768:
         search_box_xpath = '//*[@id="container"]/div/div[1]/div/div/div/div/div[1]/div/div[1]/div/div[1]/div[1]/header/div[1]/div[2]/form/div/div/input'
     else:
@@ -71,14 +57,6 @@ try:
     search_box = WebDriverWait(driver, 20).until(
         EC.element_to_be_clickable((By.XPATH, search_box_xpath))
     )
-
-    if window_width >= 768:
-        print("HELLO")
-    else:
-        search_box.click()
-        search_box = WebDriverWait(driver, 20).until(
-            EC.element_to_be_clickable((By.ID, "input-searchsearchpage-input"))
-        )
 
     search_box.send_keys("Samsung Galaxy S10")
     search_box.send_keys(Keys.RETURN)
