@@ -1,0 +1,28 @@
+userName: yashshah_elqgpS
+accessKey: vqbWKGVq9xGFkgNCHMqZ
+platforms:
+  - os: Windows
+    osVersion: 11
+    browserName: Chrome
+    browserVersion: latest
+  - os: Windows
+    osVersion: 8.1
+    browserName: Edge
+    browserVersion: 109.0
+  - os: OS X
+    osVersion: Sonoma
+    browserName: Chrome
+    browserVersion: latest
+  - os: OS X
+    osVersion: Ventura
+    browserName: Edge
+    browserVersion: latest
+  - os: Windows
+    osVersion: 10
+    browserName: Firefox
+    browserVersion: 123.0
+browserstackLocal: true
+debug: true
+networkLogs: true
+buildName: browserstack-build-1
+projectName: BrowserStack Sample
