@@ -1,5 +1,5 @@
-userName: yashshah_elqgpS
-accessKey: vqbWKGVq9xGFkgNCHMqZ
+userName: yash_jXuLch
+accessKey: VqnjWxSesNcphRWt9s9G
 platforms:
   - os: Windows
     osVersion: 11
@@ -22,6 +22,7 @@ platforms:
     browserName: Firefox
     browserVersion: 123.0
 browserstackLocal: true
+idleTimeout: 120
 debug: true
 networkLogs: true
 buildName: browserstack-build-1

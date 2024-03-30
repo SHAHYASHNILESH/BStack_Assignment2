@@ -1,3 +1,4 @@
+# Importing libraries
 import json
 import time
 from selenium import webdriver
@@ -19,9 +20,8 @@ from selenium.common.exceptions import TimeoutException
 # without any changes to the test files!
 options = ChromeOptions()
 options.set_capability("sessionName", "BStack Sample Test")
-driver = webdriver.Chrome(options=options)
 
-driver = webdriver.Chrome()
+driver = webdriver.Chrome(options=options)
 driver.maximize_window()
 
 MAX_PAGE_LOAD_WAIT_TIME = 30
@@ -43,15 +43,11 @@ try:
         raise TimeoutException("Page load failed after multiple retries.")
 
     time.sleep(5)
-    # search_box = WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.NAME, "q")))
 
     # Determine screen size
     window_width = driver.execute_script("return window.innerWidth")
 
-    if window_width >= 768:
-        search_box_xpath = '//*[@id="container"]/div/div[1]/div/div/div/div/div[1]/div/div[1]/div/div[1]/div[1]/header/div[1]/div[2]/form/div/div/input'
-    else:
-        search_box_xpath = '//*[@id="container"]/div/div[1]/div/div/div/div/div[1]/div/div/div/div[1]/div[2]/div/div/div/div/div/div/div/div/div/div[2]'
+    search_box_xpath = '//*[@id="container"]/div/div[1]/div/div/div/div/div[1]/div/div[1]/div/div[1]/div[1]/header/div[1]/div[2]/form/div/div/input'
 
     # Wait for search box to be clickable
     search_box = WebDriverWait(driver, 20).until(
@@ -73,6 +69,7 @@ try:
     )
     mobiles_category.click()
     time.sleep(3)
+
 
     # Apply filters
     brand_filter_checkbox = WebDriverWait(driver, 20).until(
@@ -97,6 +94,7 @@ try:
     flipkart_assured_filter.click()
     time.sleep(3)
 
+
     # Sort by price high to low
     sort_dropdown = WebDriverWait(driver, 20).until(
         EC.element_to_be_clickable(
@@ -109,35 +107,32 @@ try:
     sort_dropdown.click()
     time.sleep(5)
 
+
     # Get product details
-    product_elements = WebDriverWait(driver, 20).until(
-        EC.visibility_of_all_elements_located((By.CLASS_NAME, "_1fQZEK"))
-    )
-    time.sleep(3)
+    product_elements = driver.find_elements(By.CLASS_NAME, '_1fQZEK')
+    time.sleep(2)
+    # print(len(product_elements))
 
     product_list = []
 
     # Print the details
     for product_element in product_elements:
-        product_name = product_element.find_element(By.CLASS_NAME, "_4rR01T").text
-        display_price = product_element.find_element(By.CLASS_NAME, "_30jeq3").text
-        product_link = product_element.get_attribute("href")
-
-        product_list.append(
-            {
-                "Product Name": product_name,
-                "Display Price": display_price,
-                "Link to Product Details Page": product_link,
-            }
-        )
-
-        print(
-            f"Product name: {product_name}\nDisplay price: {display_price}\nMore Details: {product_link}\n"
-        )
-        time.sleep(2)
+        product_name = product_element.find_element(By.CLASS_NAME, '_4rR01T').text
+        display_price = product_element.find_element(By.CLASS_NAME, '_30jeq3').text
+        product_link = product_element.get_attribute('href')
+        
+        product_list.append({
+            'Product Name': product_name,
+            'Display Price': display_price,
+            'Link to Product Details Page': product_link
+        })
+        
+        print(f"Product name:{product_name}\nDisplay price:{display_price}\nMore Details:{product_link}")
+        print('\n')
+        time.sleep(3)
 
 except NoSuchElementException as err:
-    message = "Exception: " + str(err.__class__) + str(err.msg)
+    message = "NoSuchElementException: " + str(err)
     driver.execute_script(
         'browserstack_executor: {"action": "setSessionStatus", "arguments": {"status":"failed", "reason": '
         + json.dumps(message)
@@ -157,6 +152,13 @@ except ElementNotInteractableException as err:
         + json.dumps(message)
         + "}}"
     )
+except NoSuchElementError as err:
+    message = "NoSuchElementError: " + str(err)
+    driver.execute_script(
+        'browserstack_executor: {"action": "setSessionStatus", "arguments": {"status":"failed", "reason": '
+        + json.dumps(message)
+        + "}}"
+    )
 except Exception as err:
     message = "Exception: " + str(err.__class__) + str(err.msg)
     driver.execute_script(
@@ -164,6 +166,7 @@ except Exception as err:
         + json.dumps(message)
         + "}}"
     )
+
 finally:
     # Stop the driver
     driver.quit()
