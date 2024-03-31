@@ -1,4 +1,4 @@
-# Importing libraries
+# Importing required libraries
 import json
 import time
 from selenium import webdriver
@@ -13,16 +13,22 @@ from selenium.webdriver.chrome.options import Options as ChromeOptions
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.common.exceptions import TimeoutException
+from selenium.webdriver.common.action_chains import ActionChains
 
 
-# The webdriver management will be handled by the browserstack-sdk
-# so this will be overridden and tests will run browserstack -
-# without any changes to the test files!
 options = ChromeOptions()
 options.set_capability("sessionName", "BStack Sample Test")
 
 driver = webdriver.Chrome(options=options)
 driver.maximize_window()
+
+
+# Slow scroll function
+def slow_scroll(element):
+    actions = ActionChains(driver)
+    actions.move_to_element(element).perform()
+    time.sleep(0.5)
+
 
 MAX_PAGE_LOAD_WAIT_TIME = 30
 
@@ -70,7 +76,6 @@ try:
     mobiles_category.click()
     time.sleep(3)
 
-
     # Apply filters
     brand_filter_checkbox = WebDriverWait(driver, 20).until(
         EC.element_to_be_clickable(
@@ -94,7 +99,6 @@ try:
     flipkart_assured_filter.click()
     time.sleep(3)
 
-
     # Sort by price high to low
     sort_dropdown = WebDriverWait(driver, 20).until(
         EC.element_to_be_clickable(
@@ -107,9 +111,8 @@ try:
     sort_dropdown.click()
     time.sleep(5)
 
-
     # Get product details
-    product_elements = driver.find_elements(By.CLASS_NAME, '_1fQZEK')
+    product_elements = driver.find_elements(By.CLASS_NAME, "_1fQZEK")
     time.sleep(2)
     # print(len(product_elements))
 
@@ -117,19 +120,26 @@ try:
 
     # Print the details
     for product_element in product_elements:
-        product_name = product_element.find_element(By.CLASS_NAME, '_4rR01T').text
-        display_price = product_element.find_element(By.CLASS_NAME, '_30jeq3').text
-        product_link = product_element.get_attribute('href')
-        
-        product_list.append({
-            'Product Name': product_name,
-            'Display Price': display_price,
-            'Link to Product Details Page': product_link
-        })
-        
-        print(f"Product name:{product_name}\nDisplay price:{display_price}\nMore Details:{product_link}")
-        print('\n')
+        product_name = product_element.find_element(By.CLASS_NAME, "_4rR01T").text
+        display_price = product_element.find_element(By.CLASS_NAME, "_30jeq3").text
+        product_link = product_element.get_attribute("href")
+
+        product_list.append(
+            {
+                "Product Name": product_name,
+                "Display Price": display_price,
+                "Link to Product Details Page": product_link,
+            }
+        )
+
+        print(
+            f"Product Name:{product_name}\nDisplay Price:{display_price}\nLink to Product Details Page:{product_link}"
+        )
+        print("\n")
         time.sleep(3)
+
+        # Scroll down the page
+        slow_scroll(product_element)
 
 except NoSuchElementException as err:
     message = "NoSuchElementException: " + str(err)

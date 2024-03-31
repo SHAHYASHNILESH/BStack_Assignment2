@@ -4,7 +4,15 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.action_chains import ActionChains
 import time
+
+
+# Slow scroll function
+def slow_scroll(element):
+    actions = ActionChains(driver)
+    actions.move_to_element(element).perform()
+    time.sleep(0.5)  # Adjust the sleep time for desired scrolling speed
 
 
 driver = webdriver.Chrome()
@@ -92,10 +100,13 @@ for product_element in product_elements:
     )
 
     print(
-        f"Product name:{product_name}\nDisplay price:{display_price}\nMore Details:{product_link}"
+        f"Product Name:{product_name}\nDisplay Price:{display_price}\nLink to Product Details Page:{product_link}"
     )
     print("\n")
     time.sleep(3)
+
+    # Scroll down the page
+    slow_scroll(product_element)
 
 
 # Quit the browser
