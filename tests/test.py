@@ -136,10 +136,11 @@ try:
             f"Product Name:{product_name}\nDisplay Price:{display_price}\nLink to Product Details Page:{product_link}"
         )
         print("\n")
-        time.sleep(3)
+        time.sleep(2)
 
         # Scroll down the page
         slow_scroll(product_element)
+        time.sleep(2)
 
 except NoSuchElementException as err:
     message = "NoSuchElementException: " + str(err)
